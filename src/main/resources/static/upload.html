@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>1. Subida | Procesar Pago</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'primary-indigo': '#4F46E5',
+                        'primary-dark': '#3730A3',
+                        'success': '#10B981',
+                        'error': '#EF4444',
+                        'warning': '#F59E0B'
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-gray-50 min-h-screen flex items-center justify-center p-4">
+
+<div class="bg-white shadow-2xl rounded-xl w-full max-w-lg p-8 border border-gray-100">
+
+    <header class="mb-8 text-center border-b pb-4">
+        <h1 class="text-3xl font-extrabold text-primary-dark">
+            Procesar Nuevo Comprobante
+        </h1>
+        <p class="text-gray-500 mt-2">Sube la imagen de la transferencia para iniciar el análisis con Gemini.</p>
+    </header>
+
+    <form id="uploadForm" class="space-y-6">
+
+        <div class="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-primary-indigo transition duration-200 cursor-pointer">
+            <input type="file" id="imageUpload" accept="image/*" class="hidden" required>
+            <label for="imageUpload" class="flex flex-col items-center justify-center space-y-2 cursor-pointer">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-10 h-10 text-gray-400"><path fill-rule="evenodd" d="M11.47 1.72a.75.75 0 0 1 1.06 0l3.75 3.75a.75.75 0 0 1-1.06 1.06L12 3.81L8.78 7.03a.75.75 0 0 1-1.06-1.06l3.75-3.75Z" clip-rule="evenodd" /><path fill-rule="evenodd" d="M4.5 10.5a7.5 7.5 0 0 1 15 0v3.75a.75.75 0 0 1-1.5 0v-3.75a6 6 0 0 0-12 0v3.75a.75.75 0 0 1-1.5 0v-3.75Z" clip-rule="evenodd" /><path fill-rule="evenodd" d="M12 18a.75.75 0 0 1 .75.75v3.75a.75.75 0 0 1-1.5 0v-3.75a.75.75 0 0 1 .75-.75Z" clip-rule="evenodd" /></svg>
+                <span id="labelUploadText" class="text-gray-600 font-semibold">
+                        Haz clic para subir un archivo (JPEG/PNG)
+                    </span>
+                <p id="fileNameDisplay" class="text-xs text-gray-500"></p>
+            </label>
+        </div>
+
+        <div class="text-center mt-4">
+            <img id="imagePreview" src="#" alt="Previsualización del Comprobante" class="hidden w-full h-48 object-contain rounded-lg border border-gray-200 mx-auto">
+            <p id="previewText" class="text-sm text-gray-400 mt-2">Aún no hay imagen seleccionada.</p>
+        </div>
+
+        <p id="statusMessage" class="text-center p-3 rounded-lg font-semibold bg-white hidden"></p>
+
+        <button type="submit" id="submitButton" disabled class="w-full py-3 bg-primary-indigo text-white font-bold rounded-lg shadow-lg hover:bg-primary-dark transition duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-3">
+            <span>Enviar a Procesamiento Asíncrono</span>
+        </button>
+
+        <div class="text-center pt-2">
+            <a href="index.html" class="text-sm text-gray-500 hover:text-primary-indigo">Volver al Dashboard</a>
+        </div>
+
+    </form>
+</div>
+
+<script src="utils.js"></script>
+<script src="upload.js"></script>
+</body>
+</html>

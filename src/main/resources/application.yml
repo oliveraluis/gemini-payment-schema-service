@@ -1,0 +1,16 @@
+spring:
+  application:
+    name: "gemini"
+  data:
+    mongodb:
+      uri: ${MONGO_URI}
+
+springdoc:
+  swagger-ui:
+    path: "/swagger-ui.html"
+
+gemini:
+  ia:
+    model: ${GEMINI_MODEL}
+    api:
+      key: ${GEMINI_API_KEY}

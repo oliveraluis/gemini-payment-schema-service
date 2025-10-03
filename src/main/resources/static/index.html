@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard | Historial de Procesamientos de Pagos</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'primary-indigo': '#4F46E5',
+                        'primary-dark': '#3730A3',
+                        'success': '#10B981',
+                        'error': '#EF4444',
+                        'warning': '#F59E0B'
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-gray-50 min-h-screen p-4 md:p-10">
+
+<div class="bg-white shadow-2xl rounded-xl w-full max-w-7xl mx-auto p-6 md:p-10 border border-gray-100">
+
+    <header class="mb-10 text-center border-b pb-4 flex flex-col md:flex-row justify-between items-center">
+        <h1 class="text-3xl md:text-4xl font-extrabold text-primary-dark tracking-tight mb-4 md:mb-0">
+            Dashboard de Pagos Procesados
+        </h1>
+        <div class="flex gap-4">
+            <a href="upload.html"
+               class="py-2 px-4 bg-success text-white font-semibold rounded-lg shadow-md hover:bg-success/80 transition duration-300 flex items-center gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5">
+                    <path fill-rule="evenodd"
+                          d="M12 3.75a.75.75 0 0 1 .75.75v6.75h6.75a.75.75 0 0 1 0 1.5h-6.75v6.75a.75.75 0 0 1-1.5 0v-6.75H4.5a.75.75 0 0 1 0-1.5h6.75V4.5a.75.75 0 0 1 .75-.75Z"
+                          clip-rule="evenodd"/>
+                </svg>
+                <span>Nuevo Procesamiento</span>
+            </a>
+            <button id="refreshButton"
+                    class="py-2 px-4 bg-primary-indigo text-white font-semibold rounded-lg shadow-md hover:bg-primary-dark transition duration-300 flex items-center gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5">
+                    <path fill-rule="evenodd"
+                          d="M16.03 4.47a.75.75 0 0 1 0 1.06L14.12 7.44l1.91 1.91a.75.75 0 0 1-1.06 1.06l-2.44-2.44a.75.75 0 0 1 0-1.06l2.44-2.44a.75.75 0 0 1 1.06 0ZM7.97 19.53a.75.75 0 0 0 0-1.06L9.88 16.56l-1.91-1.91a.75.75 0 0 0 1.06-1.06l2.44 2.44a.75.75 0 0 0 0 1.06l-2.44 2.44a.75.75 0 0 0-1.06 0ZM12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18ZM1.5 12a10.5 10.5 0 1 1 21 0 10.5 10.5 0 0 1-21 0Z"
+                          clip-rule="evenodd"/>
+                </svg>
+                <span class="hidden sm:inline">Actualizar</span>
+            </button>
+        </div>
+    </header>
+
+    <div id="historyContainer">
+
+        <div id="statusMessage" class="text-center py-16 text-gray-500 text-lg font-semibold">
+            Cargando historial de pagos...
+        </div>
+
+        <div class="overflow-x-auto shadow-xl rounded-lg border border-gray-200 hidden" id="tableWrapper">
+            <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-primary-dark text-white">
+                <tr>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">ID de
+                        Registro
+                    </th>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Fecha /
+                        Hora
+                    </th>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Monto</th>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">
+                        Recipiente
+                    </th>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Estado</th>
+                    <th scope="col" class="px-6 py-3"></th>
+                </tr>
+                </thead>
+                <tbody id="historyTableBody" class="bg-white divide-y divide-gray-100">
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+
+    <footer class="mt-10 pt-4 border-t text-center text-sm text-gray-400">
+        <p>Dashboard de Pagos - Datos obtenidos de `GET /payments`.</p>
+    </footer>
+</div>
+
+<div id="detailModal"
+     class="fixed inset-0 bg-gray-900 bg-opacity-80 backdrop-blur-sm overflow-y-auto h-full w-full hidden z-50 transition-opacity duration-300">
+
+    <div class="relative top-4 md:top-10 mx-auto p-0 border w-11/12 md:w-3/4 lg:w-3/5 xl:w-1/2 shadow-2xl rounded-xl bg-white transform transition-all duration-300 scale-95 opacity-0">
+
+        <div class="p-6 md:p-8 border-b bg-gray-50 rounded-t-xl flex justify-between items-center">
+            <h3 class="text-2xl font-bold text-primary-dark tracking-tight">Detalles de la Transacción</h3>
+            <button id="closeModal"
+                    class="text-gray-500 hover:text-gray-900 transition duration-150 p-1 rounded-full hover:bg-white"
+                    aria-label="Cerrar">&times;
+            </button>
+        </div>
+
+        <div class="grid grid-cols-1 gap-6 p-6 md:p-8">
+
+            <div class="lg:col-span-1">
+                <h4 class="text-lg font-semibold mb-4 text-primary-indigo border-b pb-2">Información de Pago
+                    Normalizada</h4>
+
+                <div class="p-5 rounded-xl mb-6 shadow-md border border-indigo-200 bg-indigo-50/50">
+                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
+                        <div>
+                            <p class="text-sm font-medium text-gray-600">Monto Total Pagado</p>
+                            <p id="modalTotalAmount" class="text-3xl font-extrabold text-primary-dark"></p>
+                        </div>
+                        <div class="text-right">
+                            <span id="modalFinalStatus"
+                                  class="px-3 py-1 text-base font-bold rounded-full shadow-sm"></span>
+                            <p class="text-xs text-gray-500 mt-1">ID de Registro: <span id="modalRecordId"
+                                                                                        class="font-mono"></span></p>
+                        </div>
+                    </div>
+                    <p class="text-xs text-gray-500 mt-3 text-right">Registrado en el sistema: <span
+                            id="modalCreatedAt"></span></p>
+                </div>
+
+                <h5 class="text-md font-semibold mb-2 text-gray-700">Datos de la Transacción</h5>
+                <dl class="divide-y divide-gray-100 border border-gray-200 rounded-xl overflow-hidden shadow-sm">
+
+                    <div class="bg-gray-100 px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                        <dt class="text-sm font-bold text-gray-600">Recipiente</dt>
+                        <dd id="modalRecipient"
+                            class="mt-1 text-sm text-primary-dark sm:col-span-2 sm:mt-0 font-extrabold"></dd>
+                    </div>
+
+                    <div class="bg-white px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                        <dt class="text-sm font-medium text-gray-500">Fecha y Hora de Pago</dt>
+                        <dd id="modalDateTime" class="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0"></dd>
+                    </div>
+
+                    <div class="bg-gray-50 px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                        <dt class="text-sm font-medium text-gray-500">Plataforma / Teléfono</dt>
+                        <dd class="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0">
+                            <span id="modalDestination" class="font-semibold mr-3"></span> |
+                            <span id="modalPhoneNumber" class="font-mono text-gray-700"></span>
+                        </dd>
+                    </div>
+
+                    <div class="bg-white px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                        <dt class="text-sm font-medium text-gray-500">Código de Operación</dt>
+                        <dd id="modalOperationCode"
+                            class="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0 font-mono"></dd>
+                    </div>
+
+                </dl>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script src="utils.js"></script>
+<script src="index.js"></script>
+</body>
+</html>
