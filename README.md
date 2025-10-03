@@ -74,9 +74,10 @@ El proyecto **NO LEVANTARÁ** sin las siguientes variables de entorno definidas 
 
 1.  **Clonar:** `git clone [URL]`
 2.  **Configurar Entorno:** Define las tres variables listadas arriba en tu entorno o en el archivo de configuración de Spring.
-3.  **Ejecutar:** ```bash
-    ./mvnw clean install
-    ./mvnw spring-boot:run
+3.  **Ejecutar:**
+    ```bash
+    mvn clean install || mvn clean package
+    mvn spring-boot:run
     ```
 
 La aplicación estará activa en `http://localhost:8080`, lista para recibir *requests* en `/api/payments`.
