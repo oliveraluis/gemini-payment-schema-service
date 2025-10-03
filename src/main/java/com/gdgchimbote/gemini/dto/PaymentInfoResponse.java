@@ -4,7 +4,6 @@ import com.google.genai.types.Schema;
 import com.google.genai.types.Type;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import org.springframework.data.mongodb.core.schema.JsonSchemaObject;
 
 import java.util.HashMap;
 import java.util.List;

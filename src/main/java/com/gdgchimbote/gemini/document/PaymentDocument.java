@@ -2,7 +2,6 @@ package com.gdgchimbote.gemini.document;
 
 import com.gdgchimbote.gemini.dto.PaymentInfoResponse;
 import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
